@@ -1,0 +1,14 @@
+{
+  "name": "partner-trust-platform",
+  "private": true,
+  "workspaces": [
+    "platform-frontend",
+    "platform-backend",
+    "platform-types"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace=platform-frontend",
+    "dev:backend": "npm run dev --workspace=platform-backend",
+    "build:types": "npm run build --workspace=platform-types"
+  }
+}
