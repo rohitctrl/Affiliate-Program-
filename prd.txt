@@ -1,0 +1,106 @@
+Section 1: Goals and Background Context
+Goals
+This project's success will be measured against the following user and business outcomes:
+User Success: New affiliates can onboard, generate a tracking link, and see their first click registered in under 5 minutes.
+User Success: Achieve 100% accuracy in commission tracking and payouts, building unwavering user trust.
+Business Success: Acquire 1,000 active, commission-earning affiliates within 6 months of public launch.
+Business Success: Become the top-rated platform for "user trust" and "ease of use" on major software review sites (G2, Capterra) within 18 months.
+Background Context
+The current market for affiliate and partner management software is failing the individual creator. Existing platforms are plagued by a deep-seated lack of trust due to opaque fees, unreliable tracking, and sudden account suspensions with commissions withheld. This project aims to solve these problems by building a platform founded on transparency, reliability, and simplicity, empowering creators to manage their partnership income with confidence.
+
+Section 2: Requirements (Redrafted for MVP)
+Functional Requirements
+FR1: The system must provide an intuitive, self-service portal for companies to create and manage affiliate programs, including setting commission structures and uploading marketing assets for their partners.
+FR2: Affiliates must have access to a real-time dashboard that displays key performance metrics, including clicks, conversions, conversion rate, and estimated earnings.
+FR3: The platform must provide a robust, easy-to-install tracking script or integration method that reliably captures and attributes conversions to the correct affiliate.
+FR4 (Revised): The system must accurately calculate monthly commissions and provide a clear, exportable report for an administrator to execute guaranteed on-time manual payouts via external payment providers (e.g., PayPal Mass Payment, Stripe Payouts).
+FR5: The system must maintain an immutable commission ledger, providing affiliates with a transparent and auditable history of all tracked events (e.g., clicks, conversions) and corresponding payouts.
+FR6 (Revised): The platform will launch with support for a single currency (USD) for all commission tracking and payouts to target the North American market first.
+Non-Functional Requirements
+NFR1: The affiliate dashboard and all user-facing reporting interfaces must load in under 2 seconds.
+NFR2: All Personally Identifiable Information (PII) and financial data must be encrypted both in transit (using TLS 1.2+) and at rest.
+NFR3 (Revised): The system's architecture must be designed with clean patterns that allow for future scaling, but the initial infrastructure will be provisioned to serve the first 1,000-5,000 users efficiently.
+NFR4: The system must provide comprehensive logging and monitoring hooks to allow support staff to quickly investigate and diagnose user-reported issues.
+Section 3: User Interface Design Goals
+Overall UX Vision
+The user experience must be clean, data-rich, and transparent. The UI's primary goal is to inspire confidence and trust. Every element will be designed for clarity, presenting data in a way that is easy to understand and act upon.
+
+Key Interaction Paradigms
+Data-Driven Dashboards: Core experience will be modern dashboards with clear data visualizations.
+Wizard-Based Setups: Complex processes like program creation will be handled through step-by-step wizards.
+Real-Time Feedback: User actions will provide immediate, clear visual feedback.
+Core Screens and Views
+Affiliate Dashboard
+Earnings & Payouts Report
+Link Generation Tool
+Company Program Setup Wizard
+Company Partner Management
+Login & Registration
+Accessibility & Platform Support
+Accessibility Target: WCAG 2.1 AA.
+Platform Target: Web Responsive (Desktop and Mobile).
+Branding
+Assumption: No specific branding guidelines provided. The initial design will be clean, modern, and professional.
+Section 4: Technical Assumptions (Redrafted for MVP Speed)
+Repository Structure: Two Repositories (Polyrepo)
+Recommendation: We will use two separate repositories: one for the frontend application and one for the backend API to prioritize simplicity and independent deployments for the MVP.
+Service Architecture: Simple Monolithic Server
+Recommendation: The backend will be a single, monolithic Node.js server to simplify development, debugging, and deployment for the MVP.
+Testing Requirements: Unit + Integration
+Recommendation: A testing strategy combining Unit and Integration tests is required.
+Additional Technical Assumptions
+Language: TypeScript for both frontend and backend.
+Frontend: React (using Vite) for a fast and simple client-side application.
+Backend: Node.js (using Express.js) for a minimal and flexible API.
+Deployment: Frontend on Netlify/Vercel; Backend on Render/Heroku.
+Section 5: Epic List
+Epic 1: Foundation & Company Program Management
+Goal: Establish the core technical foundation and deliver a self-service portal for our founding partner companies to create and manage their affiliate programs.
+Epic 2: The Core Affiliate Experience
+Goal: Deliver a complete, intuitive, and transparent dashboard for affiliates to join programs, generate tracking links, and monitor their performance in real-time.
+Epic 3: Commission & Payout System
+Goal: Implement the commission calculation and payout reporting system to ensure affiliates are compensated accurately and on time, solidifying our platform's commitment to trust.
+Section 6: Epic 1: Foundation & Company Program Management
+Story 1.1: Foundational Project Setup
+As a developer, I want the initial frontend and backend repositories and deployment pipelines set up, so that we have a stable foundation to build and deploy all future features.
+AC: Repos created; "hello world" backend and frontend are initialized; basic CI/CD pipeline deploys to dev.
+Story 1.2: Company User Registration & Login
+As a new company representative, I want to create an account and log in securely, so that I can access the platform.
+AC: User can sign up; credentials are secure; user can log in; session is managed via tokens; error messages are clear.
+Story 1.3: Create a New Affiliate Program
+As a logged-in company user, I want a simple process to create a new affiliate program, so that I can define the terms for my partners.
+AC: User is prompted to create a program; form collects name, URL, and commission rate; new program is saved to the database.
+Story 1.4: View Program Dashboard
+As a logged-in company user, I want to see a dashboard with a list of my affiliate programs, so that I can get a high-level overview.
+AC: Main view lists all user's programs; list displays name and commission rate; includes a "Create New Program" button.
+Section 7: Epic 2: The Core Affiliate Experience (Redrafted)
+Story 2.1: Affiliate User Registration
+As an individual creator, I want to sign up and set up my profile/payment details, so that I can join programs and receive commissions.
+AC: Separate affiliate sign-up flow exists; user can add payout info; sensitive payout info is tokenized and not stored locally.
+Story 2.2: Discover & Join a Program
+As a logged-in affiliate, I want to use a unique link from a company to join their program, so that I can be approved and start promoting.
+AC: Companies have a shareable invite link; affiliates can click to join; association is created in the database; join flow works for both logged-in and new users.
+Story 2.3: Affiliate Dashboard & Link Generation
+As a logged-in affiliate, I want a central dashboard to see programs and generate tracking links, so that I can begin promoting.
+AC: Dashboard lists joined programs; includes a tool to generate unique tracking links; displays placeholders for performance metrics.
+Story 2.4: Implement Core Conversion Tracking
+As a platform operator, I want a reliable tracking system, so that I can accurately attribute sales.
+AC: Provides JS snippet for company sites; records clicks and conversions; uses a first-party cookie approach; implements a 'last-click' attribution model with a 30-day window.
+Story 2.5: Display Performance Metrics on Dashboard
+As a logged-in affiliate, I want my dashboard to show real-time performance data, so that I can see if my efforts are working.
+AC: Dashboard populates with real clicks and conversions from the tracking system; data passes a reconciliation test for accuracy.
+Section 8: Epic 3: Commission & Payout System
+Story 3.1: Commission Calculation Engine
+As a platform operator, I want a system that automatically calculates commissions, so that we can maintain an accurate financial ledger.
+AC: A scheduled process calculates commissions for new conversions; correctly applies program's rate; records transaction in the immutable ledger.
+Story 3.2: Payout Report Generation for Admins
+As a platform administrator, I want to generate a monthly payout report, so that I can execute guaranteed on-time manual payouts.
+AC: Admin can generate report for a pay period; report groups commissions by affiliate; report is exportable to a CSV compatible with PayPal/Stripe mass payments.
+Story 3.3: Affiliate Payout History View
+As an affiliate, I want to see a clear history of my payouts, so that I have a transparent record of my earnings.
+AC: "Payouts" section is added to the dashboard; clearly distinguishes between "Pending" and "Paid" commissions; shows a historical record of all payouts.
+Section 9: Checklist Results Report
+The PRD has passed a full validation against the PM Checklist. The scope is lean and focused, and it is ready for the architecture phase.
+
+Section 10: Next Steps
+This document is ready for the development phase. The Architect should be engaged to create the technical architecture document based on the requirements and technical assumptions outlined herein.

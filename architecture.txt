@@ -1,0 +1,145 @@
+FULLSTACK ARCHITECTURE DOCUMENT: THE PARTNER TRUST PLATFORM
+
+Version: 1.0
+Author: Winston (Architect)
+
+SECTION 1: INTRODUCTION
+
+This document outlines the complete fullstack architecture for The Partner Trust Platform, including backend systems, frontend implementation, and their integration. It serves as the single source of truth for AI-driven development, ensuring consistency across the entire technology stack.
+
+Starter Template or Existing Project:
+The PRD specifies a technology stack (React/Vite, Node/Express) but does not mention a specific starter template. We will proceed with a clean, greenfield setup using standard tooling to maintain simplicity and avoid inheriting unnecessary dependencies.
+
+SECTION 2: HIGH LEVEL ARCHITECTURE
+
+Technical Summary:
+This document outlines a pragmatic, full-stack architecture for "The Partner Trust Platform," designed to prioritize development velocity for our MVP. The system utilizes a polyrepo structure, cleanly separating a lightweight React/Vite frontend from a simple, monolithic Node.js/Express backend API. The infrastructure is built on modern PaaS providers to minimize operational overhead.
+
+Platform and Infrastructure Choice:
+Platform: A hybrid PaaS (Platform as a Service) approach.
+Frontend Hosting: Vercel (or Netlify).
+Backend Hosting: Render.
+Payment Execution: PayPal will be used as the external service.
+Deployment Host and Regions: All services will initially be hosted in the US-East (N. Virginia) region.
+Repository Structure:
+Structure: Polyrepo (initially three separate repositories).
+High Level Architecture Diagram:
+This diagram shows a User's Browser containing the React/Vite Frontend App. The frontend is served by Vercel/Netlify. The frontend makes API calls to the Backend API (Node.js/Express), which is hosted on the Render Platform. The Backend API reads and writes to a PostgreSQL Database, also hosted on Render. A Platform Admin also interacts with the Backend API to generate payout reports. The Backend API executes payouts via the external PayPal API.
+
+Architectural and Design Patterns:
+Client-Server Architecture: Decouples the user interface from the backend logic.
+REST API: The primary pattern for communication.
+Repository Pattern (Backend): Abstracts data access logic.
+Component-Based UI (Frontend): The core pattern of React.
+SECTION 3: TECH STACK
+Frontend Language: TypeScript (~5.4)
+Frontend Framework: React (via Vite) (~18.2)
+UI Components: Shadcn/ui + Tailwind (Latest)
+State Management: Zustand (~4.5)
+Backend Language: TypeScript (~5.4)
+Backend Framework: Node.js / Express.js (~20.x / ~4.19)
+API Style: REST (3.0.0)
+Database: PostgreSQL (16)
+Authentication: Auth.js (~5.0)
+AI / ML Services: Google Gemini API (Latest)
+Frontend Testing: Vitest & RTL (~1.6 / ~15.0)
+Backend Testing: Jest & Supertest (~29.7)
+CI/CD: Provider-Integrated (Vercel & Render)
+Error Tracking: Sentry (Latest)
+SECTION 4: DATA MODELS (FINAL PRODUCTION SCHEMA)
+User: id (UUID, PK), email (VARCHAR, UNIQUE), passwordHash (TEXT), role (ENUM), createdAt (TIMESTAMPTZ).
+Company: id (UUID, PK), ownerId (UUID, FK to User), name (VARCHAR), websiteUrl (TEXT), createdAt (TIMESTAMPTZ).
+Program: id (UUID, PK), companyId (UUID, FK to Company), name (VARCHAR), commissionRate (DECIMAL(5, 4)), inviteCode (VARCHAR, UNIQUE), isActive (BOOLEAN).
+Affiliate: id (UUID, PK), userId (UUID, FK to User), payoutProvider (ENUM), payoutDetailsToken (TEXT).
+Partnership: id (UUID, PK), affiliateId (UUID, FK to Affiliate), programId (UUID, FK to Program), status (ENUM), joinedAt (TIMESTAMPTZ). Has a UNIQUE constraint on (affiliateId, programId).
+Conversion: id (UUID, PK), partnershipId (UUID, FK to Partnership), conversionValue (DECIMAL), commissionEarned (DECIMAL), status (ENUM), payoutId (UUID, nullable), conversionTimestamp (TIMESTAMPTZ).
+SECTION 5: API SPECIFICATION (REDRAFTED)
+
+This section defines the OpenAPI 3.0 specification for the platform's REST API. It includes paths for:
+POST /auth/register: A unified endpoint to register both Company and Affiliate users.
+POST /auth/login: To log in a user and receive a JWT.
+GET, POST /programs: To manage affiliate programs.
+POST /partnerships: A RESTful endpoint for an affiliate to join a program.
+GET /affiliates/dashboard: To retrieve data for the affiliate dashboard.
+GET /track/click: A public, rate-limited endpoint to record a click.
+POST /track/conversion: A public endpoint secured by an API key to record a conversion.
+SECTION 6: COMPONENTS (REDRAFTED)
+
+Frontend Application:
+Shared UI Library: Reusable, generic UI elements (Button, Card).
+Auth UI: Login/registration forms.
+Company Portal UI: Interface for companies.
+Affiliate Dashboard UI: Interface for affiliates.
+Backend API:
+5. Auth Service: Manages user identity.
+6. Program Service: Manages affiliate program lifecycle.
+7. Partnership Service: Manages the affiliate-program relationship.
+8. Tracking Service: Ingests click and conversion events.
+9. Reporting Service: Generates statistics for dashboards.
+10. Payout Service: Calculates and prepares payouts.
+
+SECTION 7: EXTERNAL APIS (REDRAFTED FOR A LEANER MVP)
+
+The MVP will launch with a single payout provider.
+PayPal API: Used to execute commission payouts. The integration will be handled by the Payout Service, using the batch payment capability.
+SECTION 8: CORE WORKFLOWS (REDRAFTED WITH ERROR HANDLING)
+
+This section provides sequence diagrams for key processes, including error paths for:
+Workflow 1: Company Creates a New Program
+Workflow 2: Affiliate Joins a Program
+Workflow 3: End-to-End Conversion Tracking
+SECTION 9: DATABASE SCHEMA
+
+This section contains the complete SQL DDL script to create all tables, ENUM types, and indexes in PostgreSQL.
+
+SECTION 10: FRONTEND ARCHITECTURE
+
+This section defines specific patterns for the React application, including:
+Component Organization: A feature-based folder structure.
+State Management Architecture: Using Zustand, with stores organized by feature domain.
+Routing Architecture: Using react-router-dom, including a pattern for protected routes.
+Frontend Services Layer: A dedicated service layer using a centralized axios client.
+SECTION 11: BACKEND ARCHITECTURE
+
+This section defines specific patterns for the Express application, including:
+Service Architecture: A standard folder structure for controllers, routes, and services.
+Data Access Layer: A code template for the Repository Pattern.
+Authentication Architecture: A sequence diagram for the JWT flow and a code template for the authentication middleware.
+SECTION 12: UNIFIED PROJECT STRUCTURE (REDRAFTED)
+
+The project uses a polyrepo structure with three repositories:
+platform-backend: The Node.js application.
+platform-frontend: The React application.
+platform-types: A shared package containing common TypeScript interfaces.
+SECTION 13: DEVELOPMENT WORKFLOW
+
+This section provides a step-by-step guide for developers, including prerequisites, setup commands, and .env.example files for both projects.
+
+SECTION 14: DEPLOYMENT ARCHITECTURE
+
+The project uses a GitOps approach with PaaS-integrated CI/CD.
+Frontend: Deployed on Vercel/Netlify.
+Backend: Deployed on Render.
+Environments: Development, Staging, and Production.
+SECTION 15: SECURITY AND PERFORMANCE
+Security Requirements: Defines strategies for CSP, XSS prevention, secure token storage, input validation, rate limiting, and password hashing.
+Performance Optimization: Defines strategies for code splitting and sets targets for page load (<2s) and API response time (<200ms).
+SECTION 16: TESTING STRATEGY
+
+The strategy follows the testing pyramid model, with co-located tests on the frontend and a top-level tests/ directory on the backend. It provides code templates for unit, integration, and E2E tests.
+
+SECTION 17: CODING STANDARDS
+
+Defines a minimal, critical set of rules, including the mandatory use of the shared types package, separation of concerns, and consistent naming conventions.
+
+SECTION 18: ERROR HANDLING STRATEGY
+
+Defines a unified strategy with a standard JSON error response format, a global error middleware on the backend, and an axios interceptor on the frontend.
+
+SECTION 19: MONITORING AND OBSERVABILITY
+
+Defines the monitoring stack:
+Vercel Analytics (Frontend)
+Render Metrics (Backend)
+Sentry (Error Tracking)
+It also lists key metrics to monitor for both frontend and backend.
